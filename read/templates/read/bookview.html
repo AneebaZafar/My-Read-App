@@ -1,0 +1,169 @@
+{% extends 'read/basic.html' %}
+
+{% block title %}{{ book.book_name }}{% endblock %}
+
+{% block css %}
+<style>
+    body {
+        background: linear-gradient(to bottom right, 
+            rgba(82, 6, 11, 0.9),  /* Dark red (meharoon) */
+            rgba(52, 32, 54, 0.9)  /* Black */
+        ); /* Warm gradient background */
+        color: #fff; /* White text for contrast */
+        font-family: Arial, sans-serif; /* Modern font */
+        overflow: hidden; /* Prevent scrollbars for stars */
+    }
+
+    #stars-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; /* Allow clicks to pass through */
+        z-index: -1; /* Send stars behind other content */
+    }
+
+    .star {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.8); /* Star color */
+        border-radius: 50%; /* Make stars circular */
+        animation: twinkle 1.5s infinite alternate; /* Twinkling animation */
+    }
+
+    .shape {
+        position: absolute;
+        background: rgba(220, 57, 91, 0.6); /* Shape color */
+        animation: float 4s infinite alternate; /* Floating animation */
+    }
+
+    @keyframes twinkle {
+        0% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-10px); }
+    }
+
+    .container {
+        background: linear-gradient(#974444, #c5a796, #1f0b01); /* Light background for cards */
+        border-radius: 15px; /* Rounded corners for container */
+        padding: 20px; /* Padding for inner content */
+    }
+    .container:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 36px rgba(255, 0, 0, 0.5); /* Matches gradient tones */
+        }
+    
+    .btn-success {
+        background:#ff4a6b ;
+        background-color: rgba(2, 28, 37, 0.1); /* Button background */
+        border: none; /* Remove button border */
+    }
+
+    .btn-success:hover {
+        background-color: rgba(224, 26, 198, 0.2); /* Button hover effect */
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div id="stars-container"></div> <!-- Container for stars and shapes -->
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="row">
+                <img src="/media/{{ book.image }}" width="80%" height="300px" class="rounded"> <!-- Rounded image -->
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h5>{{ book.book_name }}</h5>
+            <p><b>{{ book.book_author }}</b></p>
+            <p>{{ book.description }}</p>
+            <div>
+                {% if not library %}
+                <a href="/read/chapters/{{ book.id }}">
+                    <button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2" id="start">Start Reading</button>
+                </a>
+                <a href="/read/library/{{ book.id }}">
+                    <button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2" id="add_library">Add to Library</button>
+                </a>
+                {% endif %}
+                {% if library %}
+                <a href="/read/reading_progress/{{ book.id }}">
+                    <button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2" id="continue">Continue Reading</button>
+                </a>
+                <a href="/read/remove_library/{{ book.id }}">
+                    <button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2" id="rem_library">Remove from library</button>
+                </a>
+                {% endif %}
+                {% if not reading_list %}
+                <a href="/read/reading_list/{{ book.id }}">
+                    <button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2" id="add_reading">Add to Reading List</button>
+                </a>
+                {% endif %}
+                
+                {% if reading_list %}
+                <a href="/read/remove_readinglist/{{ book.id }}">
+                    <button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2" id="rem_reading">Remove from Reading List</button>
+                </a>
+                {% endif %}
+
+                {% if writer %}
+                <a href="/read/addchapter/{{ book.id }}">
+                    <button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2" id="add_chp">Add Chapters</button>
+                </a>
+                <a href="/read/del_book/{{ book.id }}">
+                    <button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2" id="add_chp">Delete Book</button>
+                </a>
+
+                {% if book_chp %}
+                <a href="/read/edit/{{ book.id }}">
+                    <button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2" id="edit_chp">Edit Chapters</button>
+                </a>
+                {% endif %}
+                {% endif %}    
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    function createStars() {
+        const starsContainer = document.getElementById('stars-container');
+        const numberOfStars = 50;
+        const numberOfShapes = 30; // Increased for more fullness
+
+        for (let i = 0; i < numberOfStars; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            const size = Math.random() * 4 + 2;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            starsContainer.appendChild(star);
+        }
+
+        for (let i = 0; i < numberOfShapes; i++) {
+            const shape = document.createElement('div');
+            shape.classList.add('shape');
+            const size = Math.random() * 20 + 10;
+            shape.style.width = `${size}px`;
+            shape.style.height = `${size}px`;
+            shape.style.top = `${Math.random() * 100}vh`;
+            shape.style.left = `${Math.random() * 100}vw`;
+            shape.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            starsContainer.appendChild(shape);
+        }
+    }
+
+    window.onload = createStars;
+</script>
+{% endblock %}

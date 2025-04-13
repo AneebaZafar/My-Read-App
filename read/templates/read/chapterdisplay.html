@@ -1,0 +1,145 @@
+{% extends 'read/basic.html' %}
+
+{% block css %}
+<style>
+.bg-blue{
+    background-color: rgb(124, 81, 81);
+    padding-right:60px;
+    
+  }
+
+body {
+        background: linear-gradient(to bottom right, 
+            rgba(82, 6, 11, 0.9),  /* Dark red (meharoon) */
+            rgba(52, 32, 54, 0.9)  /* Black */
+        ); /* Warm gradient background */
+        color: #fff; /* White text for contrast */
+        font-family: Arial, sans-serif; /* Modern font */
+         /* Prevent scrollbars for stars */
+    }
+
+#stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicks to pass through */
+  z-index: -1; /* Send stars behind other content */
+}
+
+.star {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.8); /* Star color */
+  border-radius: 50%; /* Make stars circular */
+  animation: twinkle 1.5s infinite alternate; /* Twinkling animation */
+}
+
+.shape {
+  position: absolute;
+  background: rgba(220, 57, 91, 0.6); /* Shape color */
+  animation: float 4s infinite alternate; /* Floating animation */
+}
+@keyframes twinkle {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+
+   
+</style>
+{% endblock %}
+
+{% block title%} {{book.book_name}}{% endblock %}
+
+
+{% block body %}
+
+<div id="stars-container"></div>
+{% if not chp and not no_chp %}
+
+<div class="col-md-8 text-center my-2 mx-5">
+  <h5><b>Chapter Name:</b> {{target.0.chapter_name}}</h5>
+  <header>
+    <div class="d-flex flex-column m-5 flex-md-row align-items-center pb-3 mb-4 border-bottom bg-first">
+    </div>
+</header>
+  <p>{{target.0.chapter_description}}</p>
+  <a href="/read/continue_next/{{target.0.id}}"><button type="button" name="button" class="btn btn-success col-md-5 mx-4 my-2 mt-5">Continue Reading</button></a>
+  {% endif %}
+
+{% if chp %}
+
+<div class="container my-3">
+  <h3>Edit Chapter</h3>
+  <form action="/read/save_edit_chp/{{chpid}}" method="post"  enctype="multipart/form-data">{% csrf_token %}
+
+<div class="form-group my-4">
+  <b for="name">Chapter Name</b>
+  <input type="text" class="form-control" id="chp_name" name='chp_name' value="{{ name }}">
+</div>
+
+<div class="form-group my-4">
+  <b for="name">Chapter Descriptipon</b>
+  <input type="text" class="form-control" id="chp_dsc" name='chp_dsc' value="{{ description }}">
+</div>
+<button type="submit" class="btn btn-success col-md-5 mx-1 my-2">Submit</button>
+</form>
+
+<a href="/read/del_chp/{{chpid}}"><button type="button" name="button" class="btn btn-success col-md-5 mx-1 my-2">Delete Chapter</button></a>
+</div>
+{% endif %}
+
+{% if no_chp %}
+<div class="container-no-book bg-indigo">
+  <div class="alert">
+      <div class="alert alert-warning mt-4 bg-light" role="alert">
+          Finish reading this book. Try something else...
+      </div>
+      <a href="/read"><button type="button" name="button" class="btn btn-dark" aria-label="Close">OK</button></a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block js %}
+<script>
+
+    function createStars() {
+        const starsContainer = document.getElementById('stars-container');
+        const numberOfStars = 50;
+        const numberOfShapes = 30; // Increased for more fullness
+
+        for (let i = 0; i < numberOfStars; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            const size = Math.random() * 4 + 2;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            starsContainer.appendChild(star);
+        }
+
+        for (let i = 0; i < numberOfShapes; i++) {
+            const shape = document.createElement('div');
+            shape.classList.add('shape');
+            const size = Math.random() * 20 + 10;
+            shape.style.width = `${size}px`;
+            shape.style.height = `${size}px`;
+            shape.style.top = `${Math.random() * 100}vh`;
+            shape.style.left = `${Math.random() * 100}vw`;
+            shape.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            starsContainer.appendChild(shape);
+        }
+    }
+
+    window.onload = createStars;
+</script>
+{% endblock %}

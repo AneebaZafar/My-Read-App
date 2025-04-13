@@ -1,0 +1,129 @@
+{% extends 'read/basic.html' %}
+
+
+{% block css %}
+<style>
+  body {
+        background: linear-gradient(to bottom right, 
+            rgba(82, 6, 11, 0.9),  /* Dark red (meharoon) */
+            rgba(52, 32, 54, 0.9)  /* Black */
+        ); /* Warm gradient background */
+        color: #fff; /* White text for contrast */
+        font-family: Arial, sans-serif; /* Modern font */
+         /* Prevent scrollbars for stars */
+    }
+
+#stars-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Allow clicks to pass through */
+  z-index: -1; /* Send stars behind other content */
+}
+
+.star {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.8); /* Star color */
+  border-radius: 50%; /* Make stars circular */
+  animation: twinkle 1.5s infinite alternate; /* Twinkling animation */
+}
+
+.shape {
+  position: absolute;
+  background: rgba(220, 57, 91, 0.6); /* Shape color */
+  animation: float 4s infinite alternate; /* Floating animation */
+}
+@keyframes twinkle {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+</style>
+{% endblock %}
+
+
+{% block title %} Add Book {% endblock %}
+{% block body %}
+
+<div id="stars-container"></div> 
+<div class="container my-3">
+    <h3>Add Book</h3>
+    <form action="/read/addbook/" method="post"  enctype="multipart/form-data">{% csrf_token %}
+
+  <div class="form-group my-4">
+    <b for="name">Book Name</b>
+    <input type="text" class="form-control" id="book_name" name='book_name' placeholder="Enter Book Name">
+  </div>
+
+  <div class="form-group my-4">
+    <b for="name">Book Author</b>
+    <input type="text" class="form-control" id="book_author" name='book_author' placeholder="Enter Your Name">
+  </div>
+
+    <div class="form-group my-4">
+    <b for="name">Book Genre</b>
+    <input type="text" class="form-control" id="book_genre" name='book_genre' placeholder="Enter book Genre">
+  </div>
+
+   <div class="form-group my-4">
+    <b for="description">Book Description</b>
+    <textarea class="form-control" id="description" name='description' rows="3"></textarea>
+  </div>
+
+  <div class="form-group my-4">
+    <b for="pub_date">Publish Date</b>
+    <input type="date" class="form-control" id="pub_date" name='pub_date'></textarea>
+  </div>
+
+  <div class="form-group my-4">
+    <b for="imageupload">Upload an image</b>
+    <input type="file" class="form-control" id="image" name='image' accept="image/*"></input>
+  </div>
+        <button type="submit" id="sub_btn" class="btn btn-success my-4">Submit</button>
+</form>
+
+</div>
+{% endblock %}
+
+{% block js %}
+
+  <script>
+      function createStars() {
+          const starsContainer = document.getElementById('stars-container');
+          const numberOfStars = 50;
+          const numberOfShapes = 30; // Increased for more fullness
+  
+          for (let i = 0; i < numberOfStars; i++) {
+              const star = document.createElement('div');
+              star.classList.add('star');
+              const size = Math.random() * 4 + 2;
+              star.style.width = `${size}px`;
+              star.style.height = `${size}px`;
+              star.style.top = `${Math.random() * 100}vh`;
+              star.style.left = `${Math.random() * 100}vw`;
+              star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+              starsContainer.appendChild(star);
+          }
+  
+          for (let i = 0; i < numberOfShapes; i++) {
+              const shape = document.createElement('div');
+              shape.classList.add('shape');
+              const size = Math.random() * 20 + 10;
+              shape.style.width = `${size}px`;
+              shape.style.height = `${size}px`;
+              shape.style.top = `${Math.random() * 100}vh`;
+              shape.style.left = `${Math.random() * 100}vw`;
+              shape.style.animationDuration = `${Math.random() * 4 + 3}s`;
+              starsContainer.appendChild(shape);
+          }
+      }
+  
+      window.onload = createStars;
+  </script>
+{% endblock %}

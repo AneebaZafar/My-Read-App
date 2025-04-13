@@ -1,0 +1,259 @@
+{% extends 'read/basic.html' %}
+
+{% block title%} Profile{% endblock %}
+
+{% block css %}
+<style>
+body {
+        background: linear-gradient(to bottom right, 
+            rgba(82, 6, 11, 0.9),  /* Dark red (meharoon) */
+            rgba(52, 32, 54, 0.9)  /* Black */
+        ); /* Warm gradient background */
+        color: #fff; /* White text for contrast */
+        font-family: Arial, sans-serif; /* Modern font */
+         /* Prevent scrollbars for stars */
+    }
+
+    .col-md-3{
+  display: inline-block;
+  margin-left:-4px;
+}
+.carousel-indicators .active {
+background-color: rgb(58, 21, 14);
+}
+.col-md-3 img{
+min-width: 240px;
+height: 150px;
+}
+body .carousel-indicator li{
+background-color: rgb(21, 21, 36);
+}
+body .carousel-indicators{
+
+bottom: -40px;
+}
+.carousel-indicators li {
+    background-color: rgb(31, 20, 20);
+  }
+  body .carousel-control-prev-icon,
+  body .carousel-control-next-icon{
+    width: 15px;
+  background-color: rgb(68, 68, 105);
+  }
+  .carousel-control-prev,
+  .carousel-control-next{
+  top: auto;
+  bottom: auto;
+  padding-top: 222px;
+  }
+  body .no-padding{
+  padding-left: 0;
+  padding-right: 0;
+  }
+  .container-no-book{
+    padding:2%;
+    border-radius:20px;
+  }
+  .container:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 36px rgba(255, 0, 0, 0.5); /* Matches gradient tones */
+}
+  .alert{
+    display:flex;
+    border-radius:20px;
+  }
+  .bg-indigo{
+    background-color: rgb(49, 21, 21);
+  }
+  .bg-blue{
+    background-color: burlywood;
+  }
+  .bg-bar{
+    border-radius:20px;
+    background-color: rgba(109, 86, 39, 0.8)
+  }
+  .bg-first{
+    padding:10px;
+    border-radius:20px;
+    background-color: rgba(153, 67, 67, 0.8);
+  }
+  button {
+            background-color: #ff4a6b;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 72, 107, 0.4);
+        }
+
+    #stars-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; /* Allow clicks to pass through */
+        z-index: -1; /* Send stars behind other content */
+    }
+
+    .star {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.8); /* Star color */
+        border-radius: 50%; /* Make stars circular */
+        animation: twinkle 1.5s infinite alternate; /* Twinkling animation */
+    }
+
+    .shape {
+        position: absolute;
+        background: rgba(220, 57, 91, 0.6); /* Shape color */
+        animation: float 4s infinite alternate; /* Floating animation */
+    }
+    @keyframes twinkle {
+        0% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-10px); }
+    }
+</style>
+{% endblock %}
+
+
+{% block body %}
+
+
+<div id="stars-container"></div>
+<div class="container py-3 bg-bar">
+  <header>
+    <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom bg-first">
+        <a>
+            <svg width="40" height="50" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-3.31 0-6 2.69-6 6v2h12v-2c0-3.31-2.69-6-6-6z" fill="currentColor"/>
+            </svg>  
+        </a>                     
+            <b class="fs-1">My Profile</b>
+        
+
+      <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+        <a class="me-3 py-2 link-body-emphasis text-decoration-none fs-4 mx-3" href="/read/edit_profile">Edit Profile</a>
+        <a class="me-3 py-2 link-body-emphasis text-decoration-none fs-4 mx-3" href="/read/handlelogout">Logout</a>
+        <a class="me-3 py-2 link-body-emphasis text-decoration-none fs-4 mx-3" href="/read/help">Blog</a>
+      </nav>
+    </div>
+
+    
+  </header>
+
+    <div class="container bg-first">
+      <h4 class="mt-4 mx-4 fs-3">
+        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z" fill="currentColor"/>
+      </svg>
+      <b>My Stories:</b>
+      <a href="/read/addbook"><button type="button" name="button" class="btn btn-success col-md-3 mx-5 my-2" id="add_book">Add to Stories</button></a>
+    </h4>
+
+    {% if no_book %}
+        <div class="'alert ">
+        <div class="alert alert-warning mt-4 mx-auto col-md-5 bg-blue" role="alert">
+        No Book by you. Try writing your ideas!!!.
+      </div>
+      </div>
+   
+      {% endif %}
+        <!--Slideshow starts here -->
+        {% for book, range, nSlides in library %}
+        
+        <div class="row">
+            <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
+                <ul class="carousel-indicators">
+                    <li data-bs-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
+                    {% for i in range %}
+                    <li data-bs-target="#demo{{forloop.parentloop.counter}}" data-slide-to="{{i}}"></li>
+                    {% endfor %}
+                </ul>
+                <div class="container carousel-inner no-padding">
+                    <div class="carousel-item active">
+                        {% for i in book %}
+                        <div class="col-xs-3 col-sm-3 col-md-3">
+                            <div class="card align-items-center" style="width: 18rem;">
+                                <img src='/media/{{i.image}}' class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title" id="namepr{{i.id}}">{{i.book_name}}</h5>
+                                    <h6 class="card-title" >Author: <span id="authorpr{{i.id}}">{{i.book_author|slice:"0:10"}}...</span></h6>
+                                    <p class="card-text">{{i.description|slice:"0:53"}}...</p>
+                                    <a href="/read/bookview/{{i.id}}" class="icon-link gap-1 icon-link-hover stretched-link">
+                                        Continue reading
+                                      </a>
+                                    </div>
+                            </div>
+                        </div>
+                        {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+                    </div>
+                    <div class="carousel-item">
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+          </a>
+          <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-slide="next">
+              <span class="carousel-control-next-icon"></span>
+          </a>
+      </div>
+      {% endfor %}
+    </div>
+</div>
+
+
+
+<script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    
+
+{% endblock %}
+
+{% block js %}
+<script>
+    function createStars() {
+        const starsContainer = document.getElementById('stars-container');
+        const numberOfStars = 50;
+        const numberOfShapes = 30; // Increased for more fullness
+
+        for (let i = 0; i < numberOfStars; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            const size = Math.random() * 4 + 2;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            starsContainer.appendChild(star);
+        }
+
+        for (let i = 0; i < numberOfShapes; i++) {
+            const shape = document.createElement('div');
+            shape.classList.add('shape');
+            const size = Math.random() * 20 + 10;
+            shape.style.width = `${size}px`;
+            shape.style.height = `${size}px`;
+            shape.style.top = `${Math.random() * 100}vh`;
+            shape.style.left = `${Math.random() * 100}vw`;
+            shape.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            starsContainer.appendChild(shape);
+        }
+    }
+
+    window.onload = createStars;
+</script>
+{% endblock %}

@@ -1,0 +1,272 @@
+{% extends 'read/basic.html' %}
+
+{% block css %}
+<style>
+    body {
+        background: linear-gradient(to bottom right, 
+            rgba(82, 6, 11, 0.9),  /* Dark red (meharoon) */
+            rgba(52, 32, 54, 0.9)  /* Black */
+        ); /* Warm gradient background */
+        color: #fff; /* White text for contrast */
+        font-family: Arial, sans-serif; /* Modern font */
+         /* Prevent scrollbars for stars */
+    }
+
+    #stars-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; /* Allow clicks to pass through */
+        z-index: -1; /* Send stars behind other content */
+    }
+
+    .star {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.8); /* Star color */
+        border-radius: 50%; /* Make stars circular */
+        animation: twinkle 1.5s infinite alternate; /* Twinkling animation */
+    }
+
+    .shape {
+        position: absolute;
+        background: rgba(220, 57, 91, 0.6); /* Shape color */
+        animation: float 4s infinite alternate; /* Floating animation */
+    }
+
+    @keyframes twinkle {
+        0% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-10px); }
+    }
+
+    .col-md-3 {
+        display: inline-block;
+        margin-left: -4px;
+    }
+
+    .carousel-indicators .active {
+        background-color: #461c03; /* Highlight for active indicator */
+    }
+
+    .col-md-3 img {
+        min-width: 240px;
+        height: 150px;
+         /* Rounded corners for images */
+        
+    }
+
+    
+    body .carousel-indicator li {
+        background-color: rgba(114, 11, 11, 0.5); /* Semi-transparent indicators */
+    }
+
+    body .carousel-indicators {
+        bottom: -40px;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 15px;
+        background-color: #ffcc5c; /* Bright background for carousel controls */
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        top: auto;
+        bottom: auto;
+        padding-top: 222px;
+    }
+
+    .no-padding {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .container {
+        
+        background: linear-gradient(#2e0b0b,#682702, #ac6278, #773928); /* Light background for cards */
+        padding: 20px; /* Add padding for inner content */
+    }
+    .container:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 36px rgba(255, 0, 0, 0.5); /* Matches gradient tones */
+    }
+    .carousel-item {
+        background-color: rgba(187, 102, 102, 0.1); /* Light overlay for carousel items */
+         /* Rounded corners for carousel items */
+    }
+
+    .alert {
+        border-radius: 10px; /* Rounded corners for alerts */
+        padding: 15px;
+        text-align: center; /* Centered alert text */
+        color: #333; /* Dark text for alert */
+    }
+
+    .bg-indigo {
+        background-color: rgba(59, 26, 26, 0.8); /* Semi-transparent dark background */
+    }
+
+    .bg-blue {
+        background-color: rgba(148, 69, 38, 0.8); /* Soft background for alert */
+    }
+
+    .btn-close {
+        position: absolute;
+        right: 15px;
+        top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block title %}Ritepad {% endblock %}
+
+{% block body %}
+{% load static %}
+
+<div id="stars-container"></div> <!-- Container for stars and shapes -->
+<div class="container bg-first">
+    <!-- Slideshow starts here -->
+
+    {% for book, range, nSlides in allbooks %}
+    <h4 class="my-4"><b>Genre: </b>{{ book.0.book_genre }}</h4>
+    <div class="row">
+        <div id="demo{{ forloop.counter }}" class="col carousel slide my-3" data-ride="carousel">
+            <ul class="carousel-indicators">
+                <li data-bs-target="#demo{{ forloop.counter }}" data-slide-to="0" class="active"></li>
+                {% for i in range %}
+                <li data-bs-target="#demo{{ forloop.parentloop.counter }}" data-slide-to="{{ i }}"></li>
+                {% endfor %}
+            </ul>
+            <div class="container carousel-inner no-padding">
+                <div class="carousel-item active">
+                    {% for i in book %}
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+                        <div class="card align-items-center" style="width: 18rem; background-color: rgba(255, 255, 255, 0.8); border: none;">
+                            <img src='/media/{{ i.image }}' class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title" id="namepr{{ i.id }}">{{ i.book_name|slice:"0:10" }}</h5>
+                                <h6 class="card-title">Author: <span id="authorpr{{ i.id }}">{{ i.book_author|slice:"0:10" }}...</span></h6>
+                                <p class="card-text">{{ i.description|slice:"0:53" }}...</p>
+                                <a href="/read/bookview/{{ i.id }}" class="icon-link gap-1 icon-link-hover stretched-link link-success">
+                                    Explore reads
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+                </div>
+                <div class="carousel-item">
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <a class="carousel-control-prev" href="#demo{{ forloop.counter }}" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#demo{{ forloop.counter }}" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+    {% endfor %}
+
+    {% for all_users, range, nslides in allusers %}
+    <h4 class="my-4"><b>Users: </b>Found Profiles</h4>
+    <div class="row">
+        <div id="demo{{ forloop.counter }}" class="col carousel slide my-3" data-ride="carousel">
+            <ul class="carousel-indicators">
+                <li data-bs-target="#demo{{ forloop.counter }}" data-slide-to="0" class="active"></li>
+                {% for i in range %}
+                <li data-bs-target="#demo{{ forloop.parentloop.counter }}" data-slide-to="{{ i }}"></li>
+                {% endfor %}
+            </ul>
+            <div class="container carousel-inner no-padding">
+                <div class="carousel-item active">
+                    {% for i in all_users %}
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+                        <div class="card align-items-center" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" id="namepr{{ i.id }}">{{ i.username}}</h5>
+                                <h6 class="card-title">Email <span id="authorpr{{ i.id }}">{{ i.email}}</span></h6>
+                                <a href="/read/view_profile/{{ i.id }}" class="btn btn-success my-3">View Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+                </div>
+                <div class="carousel-item">
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <a class="carousel-control-prev" href="#demo{{ forloop.counter }}" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#demo{{ forloop.counter }}" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+
+
+{% if msg %}
+<div class="container bg-indigo">
+    <div class="alert">
+        <a href="/read"><button type="button" name="button" class="btn-close bg-white" aria-label="Close"></button></a>
+        <div class="alert alert-warning mt-4 bg-blue" role="alert">
+            {{ msg }}
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+<script>
+    function createStars() {
+        const starsContainer = document.getElementById('stars-container');
+        const numberOfStars = 50;
+        const numberOfShapes = 30; // Increased for more fullness
+
+        for (let i = 0; i < numberOfStars; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            const size = Math.random() * 4 + 2;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            starsContainer.appendChild(star);
+        }
+
+        for (let i = 0; i < numberOfShapes; i++) {
+            const shape = document.createElement('div');
+            shape.classList.add('shape');
+            const size = Math.random() * 20 + 10;
+            shape.style.width = `${size}px`;
+            shape.style.height = `${size}px`;
+            shape.style.top = `${Math.random() * 100}vh`;
+            shape.style.left = `${Math.random() * 100}vw`;
+            shape.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            starsContainer.appendChild(shape);
+        }
+    }
+
+    window.onload = createStars;
+</script>
+{% endblock %}

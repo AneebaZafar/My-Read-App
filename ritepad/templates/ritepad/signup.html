@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        /* Background Gradient and Stars */
+        body {
+            background: linear-gradient(to bottom, #4b0026, #1c1127);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .star, .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            animation: float 4s infinite ease-in-out alternate;
+        }
+
+        .shape {
+            background: rgba(220, 57, 91, 0.6);
+            border-radius: 50% 50% 0 50%;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(-10px) scale(1); }
+            50% { transform: translateY(10px) scale(1.2); }
+        }
+
+        /* Updated container styling with hot red, black, and silver */
+        .signup-container {
+            background: linear-gradient(
+                to bottom right, 
+                rgba(56, 1, 1, 0.9),  /* Dark red (meharoon) */
+                  
+                rgba(89, 94, 94, 0.5),/*Silver*/
+                rgba(12, 0, 0, 0.9) /* Black */
+            );
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            width: 400px;
+            position: relative;
+            z-index: 10;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .signup-container:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 36px rgba(255, 0, 0, 0.5); /* Matches gradient tones */
+        }
+
+        h3 {
+            color: #ff7a89;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        label {
+            color: #f0e6e9;
+            font-weight: 500;
+        }
+
+        input {
+            height: 45px;
+            width: 100%;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            box-shadow: inset 0 2px 4px rgba(199, 82, 82, 0.4);
+            outline: none;
+        }
+
+        input:focus {
+            border: 1px solid #ff4a6b;
+            box-shadow: 0 0 8px rgba(255, 87, 118, 0.6);
+        }
+
+        button {
+            background-color: #ff4a6b;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 12px 20px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 72, 107, 0.4);
+        }
+
+        button:hover {
+            background-color: #bf1c42;
+        }
+
+        .text-center a {
+            color: #ff7a89;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .text-center a:hover {
+            color: #ff4a6b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="stars" id="stars-container"></div>
+
+<div class="signup-container">
+    
+    <form action="" method="post">
+        {% csrf_token %} 
+        <h3>Signup Here</h3>
+
+        <label for="username">Username</label>
+        <input type="text" placeholder="Username" name="username" id="username">
+        <br><br>
+        <label for="email">Email</label>
+        <input type="email" placeholder="Email or Phone" name="email" id="email">
+        <br><br>
+        <label for="password1">Password</label>
+        <input type="password" placeholder="Password" id="password1" name="password1">
+        <br><br>
+        <label for="password2">Confrom Password</label>
+        <input type="password" placeholder="Confirm Password" id="password2" name="password2">
+        <br><br>
+        <button type="submit">Signup</button>
+        
+        <a href="{% url 'login' %}" >Already have an account? Login</a>
+    </form>
+</div>
+
+<!-- Scripts for Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function createStars() {
+        const starsContainer = document.getElementById('stars-container');
+        const numberOfStars = 50;
+        const numberOfShapes = 30; // Increased for more fullness
+
+        for (let i = 0; i < numberOfStars; i++) {
+            const star = document.createElement('div');
+            star.classList.add('star');
+            const size = Math.random() * 4 + 2;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${Math.random() * 100}vh`;
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            starsContainer.appendChild(star);
+        }
+
+        for (let i = 0; i < numberOfShapes; i++) {
+            const shape = document.createElement('div');
+            shape.classList.add('shape');
+            const size = Math.random() * 20 + 10;
+            shape.style.width = `${size}px`;
+            shape.style.height = `${size}px`;
+            shape.style.top = `${Math.random() * 100}vh`;
+            shape.style.left = `${Math.random() * 100}vw`;
+            shape.style.animationDuration = `${Math.random() * 4 + 3}s`;
+            starsContainer.appendChild(shape);
+        }
+    }
+
+    window.onload = createStars;
+</script>
+
+</body>
+</html>
